@@ -1,10 +1,51 @@
-import React, { Component } from 'react';
-import './App.css';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import axios from 'axios';
-import './Title.js';
+import ReactDOM from 'react-dom';
 
+const Title = ({todoCount}) => {
+  return (
+    <div>
+       <div>
+          <h1>to-do ({todoCount})</h1>
+       </div>
+    </div>
+  );
+}
 
+const TodoForm = ({addTodo}) => {
+  // Input Tracker
+  let input;
+  // Return JSX
+  return (
+    <form onSubmit={(e) => {
+        e.preventDefault();
+        addTodo(input.value);
+        input.value = '';
+      }}>
+      <input className="form-control col-md-12" ref={node => {
+        input = node;
+      }} />
+      <br />
+    </form>
+  );
+};
+
+const Todo = ({todo, remove}) => {
+  // Each Todo
+  return (<button className="list-group-item" onClick={() => {remove(todo.id)}}>{todo.text}</button>);
+}
+
+const TodoList = ({todos, remove}) => {
+  // Map through the todos
+  const todoNode = todos.map((todo) => {
+    return (<Todo todo={todo} key={todo.id} remove={remove}/>)
+  });
+  return (<div className="list-group" style={{marginTop:'30px'}}>{todoNode}</div>);
+}
+
+// Contaner Component
+// Todo Id
+window.id = 0;
 class TodoApp extends React.Component{
   constructor(props){
     // Pass props to parent class
@@ -38,6 +79,7 @@ class TodoApp extends React.Component{
   // Handle remove
   handleRemove(id){
     // Filter all todos except the one to be removed
+    // eslint-disable-next-line
     const remainder = this.state.data.filter((todo) => {
       if(todo.id !== id) return todo;
     });
